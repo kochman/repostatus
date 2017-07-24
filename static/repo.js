@@ -71,16 +71,27 @@ Vue.component('repo', {
 	template: `
 		<div class="branches" v-if="loaded">
 			<div class="container-fluid card-columns">
-				<div class="card" v-for="branch in branches" v-if="branch.state" v-bind:class="{ 'bg-danger text-white': branch.state === 'failure', 'bg-success text-white': branch.state === 'success' }">
+				<div class="card text-center mb-3" v-for="branch in branches" v-if="branch.state" v-bind:class="{ 'card-outline-danger': branch.state === 'failure', 'card-outline-success': branch.state === 'success' }">
 					<div class="card-block">
-						<h3 class="card-title">
+						<h4 class="card-title">
 							{{ branch.name }}
-						</h3>
-					</div>
-					<div class="card-block">
-						<p class="card-text" v-if="branch.state === 'success'">Success (<span v-moment-ago="branch.last_updated"></span>)</p>
-						<p class="card-text" v-if="branch.state === 'failure'">Failed (<span v-moment-ago="branch.last_updated"></span>)</p>
-						<p class="card-text" v-if="branch.state === 'pending'">Pending</p>
+						</h4>
+
+						<p class="card-text">
+							<span class="text-success" v-if="branch.state === 'success'">
+								Success
+							</span>
+							<span class="text-danger" v-if="branch.state === 'failure'">
+								Failure
+							</span>
+							<span class="" v-if="branch.state === 'pending'">
+								No status checks
+							</span>
+							<span v-if="branch.state === 'success' || branch.state === 'failure'" class="">
+								<small class="text-muted"><span v-moment-ago="branch.last_updated"></span></small>
+							</span>
+						</p>
+
 					</div>
 				</div>
 			</div>
