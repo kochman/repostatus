@@ -1,12 +1,11 @@
 package main
 
 import (
-	"flag"
-	"github.com/kochman/buildstatus/server"
+	"github.com/kochman/repostatus/server"
+	"os"
 )
 
 func main() {
-	var ghat = flag.String("ghat", "", "GitHub access token")
-	flag.Parse()
-	server.Serve(*ghat)
+	ghat := os.Getenv("GHAT")
+	server.Serve(ghat)
 }

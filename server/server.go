@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"github.com/gorilla/websocket"
-	"github.com/kochman/buildstatus/travis"
+	"github.com/kochman/repostatus/travis"
 	"log"
 	"net/http"
 	"time"
@@ -66,10 +66,17 @@ func (ws wsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				json.Unmarshal(msg, wsm)
 
 				if wsm.Command == "subscribe" {
-					repo := wsm.Data["repo"].(string)
-					log.Println(repo)
+					org, ok := wsm.Data["org"].(string)
+					if !ok {
+						return
+					}
+					repo, ok := wsm.Data["repo"].(string)
+					if !ok {
+						return
+					}
+					log.Println("subscribe " + org + "/" + repo)
 					go func(ch chan []byte, repo string) {
-						tc := travis.Client{RepoSlug: repo, GitHubAccessToken: ws.GitHubAccessToken}
+						tc := travis.Client{Repo: repo, Org: org, GitHubAccessToken: ws.GitHubAccessToken}
 						ticker := time.Tick(time.Minute)
 
 						// first update
@@ -102,6 +109,7 @@ func (ws wsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 									b = newB
 									ch <- b
 								}
+								log.Println("update " + org + "/" + repo)
 							case _, open := <-stopCh:
 								if !open {
 									return
@@ -161,6 +169,7 @@ func Serve(ghat string) {
 	wsh := wsHandler{GitHubAccessToken: ghat}
 
 	http.HandleFunc("/", indexHandler)
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	http.Handle("/ws", wsh)
-	http.ListenAndServe("localhost:5000", nil)
+	http.ListenAndServe(":5000", nil)
 }

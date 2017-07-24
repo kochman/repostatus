@@ -4,38 +4,21 @@ import (
 	"context"
 	"github.com/google/go-github/github"
 	"golang.org/x/oauth2"
-	"log"
 	"sort"
-	"strings"
 	"time"
 )
 
 type Client struct {
-	RepoSlug          string
+	Org               string
+	Repo              string
 	GitHubAccessToken string
-}
-
-func (t *Client) Org() string {
-	s := strings.Split(t.RepoSlug, "/")
-	if len(s) != 2 {
-		return ""
-	}
-	return s[0]
-}
-
-func (t *Client) Repo() string {
-	s := strings.Split(t.RepoSlug, "/")
-	if len(s) != 2 {
-		return ""
-	}
-	return s[1]
 }
 
 func (t *Client) Branches() ([]Branch, error) {
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: t.GitHubAccessToken})
 	tc := oauth2.NewClient(context.Background(), ts)
 	ghc := github.NewClient(tc)
-	ghb, _, err := ghc.Repositories.ListBranches(context.Background(), t.Org(), t.Repo(), nil)
+	ghb, _, err := ghc.Repositories.ListBranches(context.Background(), t.Org, t.Repo, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -43,7 +26,7 @@ func (t *Client) Branches() ([]Branch, error) {
 	branches := make([]Branch, len(ghb))
 
 	for i, branch := range ghb {
-		cs, _, err := ghc.Repositories.GetCombinedStatus(context.Background(), t.Org(), t.Repo(), *branch.Name, nil)
+		cs, _, err := ghc.Repositories.GetCombinedStatus(context.Background(), t.Org, t.Repo, *branch.Name, nil)
 		if err != nil {
 			return nil, err
 		}
@@ -63,12 +46,10 @@ func (t *Client) Branches() ([]Branch, error) {
 		}
 
 		branches[i] = branch
-		log.Println(branch)
 	}
 
 	sort.Sort(ByTime(branches))
 
-	log.Println(branches)
 	return branches, nil
 }
 

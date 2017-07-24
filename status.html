@@ -1,66 +1,54 @@
 <!doctype html>
 <html>
 <head>
+	<title>RepoStatus</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
 	<script src="https://unpkg.com/vue"></script>
-	<script src="http://momentjs.com/downloads/moment.min.js"></script>
+	<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+	<script src="https://momentjs.com/downloads/moment.min.js"></script>
+	<script src="/static/index.js"></script>
+	<script src="/static/repo.js"></script>
 	<script type="text/javascript">
 		document.addEventListener("DOMContentLoaded", function(event) {
 			vue();
 		});
 
-		// handle websocket connection to backend
-		function createWebSocket(onmessage, onopen) {
-			var ws = new WebSocket("ws://localhost:5000/ws");
-			ws.onmessage = onmessage;
-			ws.onopen = onopen;
-			ws.onclose = function(event) {
-				console.log("closed, restarting");
-				setTimeout(function() {
-					createWebSocket(onmessage, onopen);
-				}, 1000);
-			}
-		}
-
-		// set up vue to display the data
 		function vue() {
-			var app = new Vue({
-				el: ".app",
-				data: {
-					data: "hey",
-					branches: []
-				},
-				created: function() {
-					var vue = this;
-					var onmessage = function(event) {
-						var branches = JSON.parse(event.data);
-						while (vue.branches.length > 0) {
-							vue.branches.pop();
-						}
-						for (var branch of branches) {
-							vue.branches.push(branch);
-						}
-					}
-					var onopen = function(event) {
-						var ws = event.target;
-						var repo = window.location.pathname.substr(1);
-						var msg = {command: "subscribe", data: {repo: repo}};
-						ws.send(JSON.stringify(msg));
-					}
-					createWebSocket(onmessage, onopen);
-				},
-				filters: {
-					relativeTime(time) {
-						return moment(time).fromNow();
-					}
-				}
+			const routes = [
+				{ name: "index", path: "/", component: Vue.component("index") },
+				{ name: "repo", path: "/repo/:org/:repo", component: Vue.component("repo") }
+			];
+			const router = new VueRouter({
+				routes,
+				mode: "history"
 			});
+			const app = new Vue({
+				router
+			}).$mount(".app");
 		}
 	</script>
 	<style>
-		.branches {
+		.jumbotron {
+			padding-top: 6rem;
+			padding-bottom: 6rem;
+			margin-bottom: 0;
+			background-color: #fff;
+		}
+
+		.jumbotron p:last-child {
+			margin-bottom: 0;
+		}
+
+		.jumbotron-heading {
+			font-weight: 300;
+		}
+
+		.jumbotron .container {
+			max-width: 40rem;
+		}
+
+		.body {
 			padding-top: 1rem;
-			background-color: #f7f7f7;
 		}
 		.failure {
 			background: #B40404;
@@ -68,6 +56,7 @@
 		.success {
 			background: #088A08;
 		}
+
 		footer {
 			padding-top: 3rem;
 			padding-bottom: 3rem;
@@ -77,6 +66,37 @@
 			margin-bottom: .25rem;
 			line-height: 30px;
 		}
+
+		/* http://tobiasahlin.com/spinkit/ */
+		.spinner {
+			width: 40px;
+			height: 40px;
+			margin: 100px auto;
+			background-color: #333;
+
+			border-radius: 100%;
+			-webkit-animation: sk-scaleout 1.0s infinite ease-in-out;
+			animation: sk-scaleout 1.0s infinite ease-in-out;
+		}
+
+		@-webkit-keyframes sk-scaleout {
+			0% { -webkit-transform: scale(0) }
+			100% {
+				-webkit-transform: scale(1.0);
+				opacity: 0;
+			}
+		}
+
+		@keyframes sk-scaleout {
+			0% {
+				-webkit-transform: scale(0);
+				transform: scale(0);
+			} 100% {
+				-webkit-transform: scale(1.0);
+				transform: scale(1.0);
+				opacity: 0;
+			}
+		}
 	</style>
 </head>
 <body>
@@ -84,25 +104,10 @@
 	<nav class="navbar navbar-light">
 		<h1 class="navbar-brand mb-0">RepoStatus</h1>
 	</nav>
-	<div class="branches bg-light">
-		<div class="container-fluid card-columns">
-			<div class="card" v-for="branch in branches" v-if="branch.state" v-bind:class="{ 'bg-danger text-white': branch.state === 'failure', 'bg-success text-white': branch.state === 'success' }">
-				<div class="card-block">
-					<h3 class="card-title">
-						{{ branch.name }}
-					</h3>
-				</div>
-				<div class="card-block">
-					<p class="card-text" v-if="branch.state === 'success'">Success ({{ branch.last_updated | relativeTime }})</p>
-					<p class="card-text" v-if="branch.state === 'failure'">Failed ({{ branch.last_updated | relativeTime }})</p>
-					<p class="card-text" v-if="branch.state === 'pending'">Pending</p>
-				</div>
-			</div>
-		</div>
-	</div>
+	<router-view></router-view>
 	<footer class="text-muted text-center">
 		<div class="container">
-			<p>RepoStatus is <a href="https://github.com/kochman/repostatus">open source</a>.</p>
+			<p>RepoStatus is <a href="https://github.com/kochman/repostatus">open source</a> and made by <a href="https://sidney.kochman.org">Sidney Kochman</a>.</p>
 		</div>
 	</footer>
 </div>
