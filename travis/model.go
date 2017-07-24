@@ -51,4 +51,5 @@ type Branch struct {
 	Name        string    `json:"name"`
 	State       string    `json:"state"`
 	LastUpdated time.Time `json:"last_updated"`
+	CommitsURL  string    `json:"commits_url"`
 }

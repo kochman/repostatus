@@ -39,10 +39,12 @@ func (t *Client) Branches() ([]Branch, error) {
 			}
 		}
 
+		commitsURL := "https://github.com/" + t.Org + "/" + t.Repo + "/commits/" + *branch.Name
 		branch := Branch{
 			Name:        *branch.Name,
 			State:       *cs.State, // failure, pending, or success (maybe error?)
 			LastUpdated: mostRecent,
+			CommitsURL:  commitsURL,
 		}
 
 		branches[i] = branch

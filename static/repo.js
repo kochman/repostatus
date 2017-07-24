@@ -74,7 +74,7 @@ Vue.component('repo', {
 				<div class="card text-center mb-3" v-for="branch in branches" v-if="branch.state" v-bind:class="{ 'card-outline-danger': branch.state === 'failure', 'card-outline-success': branch.state === 'success' }">
 					<div class="card-block">
 						<h4 class="card-title">
-							{{ branch.name }}
+							<a v-bind:href="branch.commits_url" class="deco-none">{{ branch.name }}</a>
 						</h4>
 
 						<p class="card-text">
