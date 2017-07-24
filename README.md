@@ -18,4 +18,6 @@ The current status of this project is: garbage. It might be better after I do so
 - [ ] Link to useful things (branch, PRs, status checks, etc.)
 - [ ] Handle errors properly (e.g. a bad repo slug appears to load forever)
 - [ ] Sorting should occur client side
+- [ ] Put frontend dependencies in /static
+- [ ] Reorganize JS and CSS
 
