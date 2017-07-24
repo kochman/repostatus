@@ -20,4 +20,5 @@ The current status of this project is: garbage. It might be better after I do so
 - [ ] Sorting should occur client side
 - [ ] Put frontend dependencies in /static
 - [ ] Reorganize JS and CSS
+- [ ] Show parent branch and other useful details
 
