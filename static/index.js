@@ -5,7 +5,7 @@ Vue.component('index', {
 		}
 	},
 	methods: {
-		getStatus () {
+		getStatus() {
 			var split = this.orgRepo.split("/");
 			if (split.length != 2) {
 				return

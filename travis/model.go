@@ -48,8 +48,17 @@ type Repo struct {
 }
 
 type Branch struct {
-	Name        string    `json:"name"`
-	State       string    `json:"state"`
-	LastUpdated time.Time `json:"last_updated"`
-	CommitsURL  string    `json:"commits_url"`
+	Name         string        `json:"name"`
+	State        string        `json:"state"`
+	LastUpdated  time.Time     `json:"last_updated"`
+	CommitsURL   string        `json:"commits_url"`
+	CommitURL    string        `json:"commit_url"`
+	StatusChecks []StatusCheck `json:"status_checks"`
+	SHA          string        `json:"sha"`
+}
+
+type StatusCheck struct {
+	State       string `json:"state"`
+	Description string `json:"description"`
+	StatusURL   string `json:"status_url"`
 }

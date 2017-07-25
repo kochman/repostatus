@@ -9,6 +9,7 @@
 	<script src="https://momentjs.com/downloads/moment.min.js"></script>
 	<script src="/static/index.js"></script>
 	<script src="/static/repo.js"></script>
+	<script src="/static/branch-card.js"></script>
 	<script type="text/javascript">
 		document.addEventListener("DOMContentLoaded", function(event) {
 			vue();
@@ -59,6 +60,38 @@
 		.branches {
 			padding-top: 1rem;
 		}
+
+        @media (min-width: 34em) {
+            .branches .card-columns {
+                -webkit-column-count: 1;
+                -moz-column-count: 1;
+                column-count: 1;
+            }
+        }
+
+        @media (min-width: 48em) {
+			.branches .card-columns {
+                -webkit-column-count: 2;
+                -moz-column-count: 2;
+                column-count: 2;
+            }
+        }
+
+        @media (min-width: 68rem) {
+			.branches .card-columns {
+                -webkit-column-count: 3;
+                -moz-column-count: 3;
+                column-count: 3;
+            }
+        }
+
+        @media (min-width: 84rem) {
+			.branches .card-columns {
+                -webkit-column-count: 4;
+                -moz-column-count: 4;
+                column-count: 4;
+            }
+        }
 		.failure {
 			background: #B40404;
 		}

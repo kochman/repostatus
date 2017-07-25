@@ -33,18 +33,30 @@ func (t *Client) Branches() ([]Branch, error) {
 
 		// determine most recent status change
 		var mostRecent time.Time
+		statusChecks := []StatusCheck{}
 		for _, status := range cs.Statuses {
 			if status.UpdatedAt.After(mostRecent) {
 				mostRecent = *status.UpdatedAt
 			}
+
+			statusCheck := StatusCheck{
+				State:       *status.State,
+				Description: *status.Description,
+				StatusURL:   status.GetTargetURL(),
+			}
+			statusChecks = append(statusChecks, statusCheck)
 		}
 
 		commitsURL := "https://github.com/" + t.Org + "/" + t.Repo + "/commits/" + *branch.Name
+		commitURL := "https://github.com/" + t.Org + "/" + t.Repo + "/commit/" + *branch.Commit.SHA
 		branch := Branch{
-			Name:        *branch.Name,
-			State:       *cs.State, // failure, pending, or success (maybe error?)
-			LastUpdated: mostRecent,
-			CommitsURL:  commitsURL,
+			Name:         *branch.Name,
+			State:        *cs.State, // failure, pending, or success (maybe error?)
+			LastUpdated:  mostRecent,
+			CommitsURL:   commitsURL,
+			CommitURL:    commitURL,
+			StatusChecks: statusChecks,
+			SHA:          *branch.Commit.SHA,
 		}
 
 		branches[i] = branch
