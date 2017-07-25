@@ -59,13 +59,13 @@ Vue.component('branch-card', {
                 <template v-for="status in branch.status_checks">
                     <a v-if="status.status_url" v-bind:href="status.status_url" class="list-group-item list-group-item-action deco-none">
                         <small>
-                            <span v-if="status.state === 'failure'">❌</span>                
+                            <span v-if="status.state === 'failure'">❌</span>
                             {{ status.description }}
                         </small>
                     </a>
                     <div v-else class="list-group-item">
                         <small>
-                            <span v-if="status.state === 'failure'">❌</span>                
+                            <span v-if="status.state === 'failure'">❌</span>
                             {{ status.description }}
                         </small>
                     </div>
