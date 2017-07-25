@@ -1,17 +1,22 @@
 Vue.component('index', {
 	data() {
 		return {
-			orgRepo: "wtg/shuttletracker"
+			orgRepo: "",
 		}
 	},
 	methods: {
 		getStatus() {
-			var split = this.orgRepo.split("/");
-			if (split.length != 2) {
-				return
+		    if (this.orgRepo === "") {
+		        var org = "wtg";
+		        var repo = "shuttletracker";
+			} else {
+                var split = this.orgRepo.split("/");
+                if (split.length != 2) {
+                    return
+                }
+                var org = split[0];
+                var repo = split[1];
 			}
-			var org = split[0];
-			var repo = split[1];
 			this.$router.push({ name: "repo", params: { org: org, repo: repo}});
 		}
 	},
@@ -22,7 +27,7 @@ Vue.component('index', {
 				<p class="lead text-muted">Get the status of any public GitHub repository's branches.</p>
 				<form class="form-inline justify-content-center" v-on:submit.prevent="getStatus()">
 					<div class="input-group">
-						<input type="text" v-model="orgRepo" autocorrect="off" autocapitalize="off" spellcheck="false" class="form-control form-control-lg">
+						<input type="text" placeholder="wtg/shuttletracker" v-model="orgRepo" autocorrect="off" autocapitalize="off" spellcheck="false" class="form-control form-control-lg">
 						<div class="input-group-btn">
 							<button class="btn btn-lg btn-primary">Get status</button>
 						</div>
