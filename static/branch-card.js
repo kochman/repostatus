@@ -25,25 +25,41 @@ Vue.component('branch-card', {
 			return text.slice(0, length);
 		}
 	},
+    computed: {
+		branchState: function() {
+			if (this.branch.state === 'success') {
+				return 'success';
+			} else if (this.branch.state === 'failure') {
+				return 'failure';
+			} else if (this.branch.status_checks.length === 0) {
+				return 'no checks';
+			} else {
+				return 'pending';
+			}
+		}
+	},
 	template: `
-        <div class="card text-center" v-bind:class="{ 'card-outline-danger': branch.state === 'failure', 'card-outline-success': branch.state === 'success' }">
+        <div class="card text-center" v-bind:class="{ 'card-outline-danger': branchState === 'failure', 'card-outline-success': branchState === 'success' }">
             <div class="card-block">
                 <h4 class="card-title">
                     <a v-bind:href="branch.commits_url" class="deco-none">{{ branch.name }}</a>
                 </h4>
 
                 <p class="card-text">
-                    <span class="text-success" v-if="branch.state === 'success'">
+                    <span class="text-success" v-if="branchState === 'success'">
                         Success
                     </span>
-                    <span class="text-danger" v-if="branch.state === 'failure'">
+                    <span class="text-danger" v-if="branchState === 'failure'">
                         Failure
                     </span>
-                    <span class="" v-if="branch.state === 'pending'">
+                    <span v-if="branchState === 'pending'">
+                    	Pending
+                    </span>
+                    <span v-if="branchState === 'no checks'">
                         No status checks
                     </span>
                     
-                    <span v-if="branch.state === 'success' || branch.state === 'failure'" class="">
+                    <span v-if="branchState !== 'no checks'">
                         &middot; <small class="text-muted"><span v-moment-ago="branch.last_updated"></span></small>
                     </span>
                     
