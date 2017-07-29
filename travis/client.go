@@ -47,6 +47,15 @@ func (t *Client) Branches() ([]Branch, error) {
 			statusChecks = append(statusChecks, statusCheck)
 		}
 
+		// if there aren't any status checks, get the time of the most recent commit
+		if len(statusChecks) == 0 {
+			ghCommit, _, err := ghc.Repositories.GetCommit(context.Background(), t.Org, t.Repo, *branch.Commit.SHA)
+			if err != nil {
+				return nil, err
+			}
+			mostRecent = *ghCommit.Commit.Author.Date
+		}
+
 		commitsURL := "https://github.com/" + t.Org + "/" + t.Repo + "/commits/" + *branch.Name
 		commitURL := "https://github.com/" + t.Org + "/" + t.Repo + "/commit/" + *branch.Commit.SHA
 		branch := Branch{

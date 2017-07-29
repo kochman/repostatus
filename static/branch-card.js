@@ -56,10 +56,10 @@ Vue.component('branch-card', {
                     	Pending
                     </span>
                     <span v-if="branchState === 'no checks'">
-                        No status checks
+                        No status
                     </span>
                     
-                    <span v-if="branchState !== 'no checks'">
+                    <span>
                         &middot; <small class="text-muted"><span v-moment-ago="branch.last_updated"></span></small>
                     </span>
                     
