@@ -86,8 +86,10 @@ func (t *Client) Repository() (Repo, error) {
 	}
 
 	repo := Repo{
-		Name:        *ghr.Name,
+		Name:        ghr.GetName(),
 		Description: ghr.GetDescription(),
+		Website:     ghr.GetHomepage(),
+		GitHubURL:   ghr.GetHTMLURL(),
 	}
 
 	branches, err := t.Branches()

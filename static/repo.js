@@ -64,10 +64,12 @@ Vue.component('repo', {
             <div class="container">
             	<div class="row mt-4">
             		<div class="col-12 text-center">
-                        <h1 class="display-4">{{ repo.name }}</h1>
-                    </div>
-                    <div class="col-12 text-center">
-                    	<p class="lead">{{ repo.description }}</p>
+                        <p class="h1">{{ repo.name }}</p>
+                        <p>
+                        	<a v-bind:href="repo.github_url">GitHub</a>
+                            <template v-if="repo.website"> &middot; <a v-bind:href="repo.website">Website</a> </template>
+                        </p>
+                        <p class="text-secondary">{{ repo.description }}</p>
                     </div>
                 </div>
             </div>

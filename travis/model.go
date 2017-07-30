@@ -48,6 +48,8 @@ type Repo struct {
 	Branches    []Branch `json:"branches"`
 	Name        string   `json:"name"`
 	Description string   `json:"description"`
+	Website     string   `json:"website"`
+	GitHubURL   string   `json:"github_url"`
 }
 
 type Branch struct {
