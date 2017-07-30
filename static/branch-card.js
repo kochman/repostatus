@@ -1,12 +1,20 @@
+function momentUpdater(el, binding) {
+    const timestamp = binding.value;
+    el.innerHTML = moment(timestamp).fromNow();
+
+    clearInterval(el.interval);
+    el.interval = setInterval(() => {
+        el.innerHTML = moment(timestamp).fromNow();
+    }, 1000);
+}
+
 // custom directive to keep a relative time up to date
 Vue.directive('moment-ago', {
 	inserted(el, binding) {
-		const timestamp = binding.value;
-		el.innerHTML = moment(timestamp).fromNow();
-
-		this.interval = setInterval(() => {
-			el.innerHTML = moment(timestamp).fromNow();
-		}, 1000)
+	    momentUpdater(el, binding);
+	},
+    update(el, binding) {
+	    momentUpdater(el, binding);
 	},
 	unbind() {
 		clearInterval(this.interval);
