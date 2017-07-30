@@ -1,6 +1,8 @@
 package travis
 
-import "time"
+import (
+	"time"
+)
 
 type BuildsResp struct {
 	Builds  []Build

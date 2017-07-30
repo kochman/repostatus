@@ -39,7 +39,7 @@ Vue.component('branch-card', {
 				return 'success';
 			} else if (this.branch.state === 'failure') {
 				return 'failure';
-			} else if (this.branch.status_checks.length === 0) {
+			} else if (this.branch.status_checks === null || this.branch.status_checks.length === 0) {
 				return 'no checks';
 			} else {
 				return 'pending';

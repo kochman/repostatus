@@ -12,6 +12,7 @@ import (
 
 type wsHandler struct {
 	GitHubAccessToken string
+	RedisURL          string
 }
 
 type wsMessage struct {
@@ -74,13 +75,15 @@ func (ws wsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					if !ok {
 						return
 					}
-					log.Println("subscribe " + org + "/" + repo)
+					repoSlug := org + "/" + repo
+					log.Println("subscribe " + repoSlug)
+					updater := travis.Updater{GitHubAccessToken: ws.GitHubAccessToken, RedisURL: ws.RedisURL}
+					updater.SubscribeRepo(repoSlug)
 					go func(ch chan []byte, repo string) {
-						tc := travis.Client{Repo: repo, Org: org, GitHubAccessToken: ws.GitHubAccessToken}
-						ticker := time.Tick(time.Minute)
+						ticker := time.Tick(time.Second * 5)
 
 						// first update
-						repository, err := tc.Repository()
+						repository, err := updater.GetRepo(repoSlug)
 						if err != nil {
 							log.Println(err)
 							return
@@ -95,7 +98,8 @@ func (ws wsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						for {
 							select {
 							case <-ticker:
-								repository, err := tc.Repository()
+								repository, err := updater.GetRepo(repoSlug)
+								updater.SubscribeRepo(repoSlug)
 								if err != nil {
 									log.Println(err)
 									return
@@ -165,8 +169,8 @@ func (ws wsHandler) updater() {
 	}
 }*/
 
-func Serve(ghat string) {
-	wsh := wsHandler{GitHubAccessToken: ghat}
+func Serve(ghat string, redisURL string) {
+	wsh := wsHandler{GitHubAccessToken: ghat, RedisURL: redisURL}
 
 	http.HandleFunc("/", indexHandler)
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
