@@ -76,6 +76,29 @@ func (t *Client) Branches() ([]Branch, error) {
 	return branches, nil
 }
 
+func (t *Client) Repository() (Repo, error) {
+	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: t.GitHubAccessToken})
+	tc := oauth2.NewClient(context.Background(), ts)
+	ghc := github.NewClient(tc)
+	ghr, _, err := ghc.Repositories.Get(context.Background(), t.Org, t.Repo)
+	if err != nil {
+		return Repo{}, err
+	}
+
+	repo := Repo{
+		Name:        *ghr.Name,
+		Description: ghr.GetDescription(),
+	}
+
+	branches, err := t.Branches()
+	if err != nil {
+		return repo, err
+	}
+	repo.Branches = branches
+
+	return repo, nil
+}
+
 type ByTime []Branch
 
 func (b ByTime) Len() int {

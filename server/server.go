@@ -80,12 +80,12 @@ func (ws wsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						ticker := time.Tick(time.Minute)
 
 						// first update
-						branches, err := tc.Branches()
+						repository, err := tc.Repository()
 						if err != nil {
 							log.Println(err)
 							return
 						}
-						b, err := json.Marshal(branches)
+						b, err := json.Marshal(repository)
 						if err != nil {
 							log.Println(err)
 							return
@@ -95,12 +95,12 @@ func (ws wsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						for {
 							select {
 							case <-ticker:
-								branches, err := tc.Branches()
+								repository, err := tc.Repository()
 								if err != nil {
 									log.Println(err)
 									return
 								}
-								newB, err := json.Marshal(branches)
+								newB, err := json.Marshal(repository)
 								if err != nil {
 									log.Println(err)
 									return

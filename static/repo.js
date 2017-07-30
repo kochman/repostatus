@@ -39,19 +39,15 @@ Vue.component('repo', {
 	data() {
 		return {
 			branches: [],
+			repo: {},
 			loaded: false
 		}
 	},
-	created: function() {
+	created() {
 		var vue = this;
 		var onmessage = function(event) {
-			var branches = JSON.parse(event.data);
-			while (vue.branches.length > 0) {
-				vue.branches.pop();
-			}
-			for (var branch of branches) {
-				vue.branches.push(branch);
-			}
+		    var repo = JSON.parse(event.data);
+		    vue.repo = repo;
 			vue.loaded = true;
 		}
 		var onopen = function(event) {
@@ -64,11 +60,25 @@ Vue.component('repo', {
 		createWebSocket(onmessage, onopen);
 	},
 	template: `
-		<div class="branches" v-if="loaded">
-			<div class="container-fluid card-columns">
-				<branch-card v-bind:branch="branch" class="mb-3" v-for="branch in branches" v-if="branch.state" v-bind:key="branch.name"></branch-card>
-			</div>
-		</div>
-		<div class="spinner" v-else></div>
+		<div v-if="loaded">
+            <div class="container">
+            	<div class="row mt-4">
+            		<div class="col-12 text-center">
+                        <h1 class="display-4">{{ repo.name }}</h1>
+                    </div>
+                    <div class="col-12 text-center">
+                    	<p class="lead">{{ repo.description }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="branches" v-if="loaded">
+                <div class="container-fluid card-columns">
+                    <branch-card v-bind:branch="branch" class="mb-3" v-for="branch in repo.branches" v-if="branch.state" v-bind:key="branch.name"></branch-card>
+                </div>
+            </div>
+        </div>
+        <div v-else>
+            <div class="spinner" v-if="!loaded"></div>
+        </div>
 	`
 });

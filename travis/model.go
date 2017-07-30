@@ -45,6 +45,9 @@ type TravisBranch struct {
 }
 
 type Repo struct {
+	Branches    []Branch `json:"branches"`
+	Name        string   `json:"name"`
+	Description string   `json:"description"`
 }
 
 type Branch struct {
