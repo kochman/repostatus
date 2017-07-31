@@ -18,14 +18,24 @@ func (t *Client) Branches() ([]Branch, error) {
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: t.GitHubAccessToken})
 	tc := oauth2.NewClient(context.Background(), ts)
 	ghc := github.NewClient(tc)
-	ghb, _, err := ghc.Repositories.ListBranches(context.Background(), t.Org, t.Repo, nil)
-	if err != nil {
-		return nil, err
+
+	// loop over all pages in response
+	ghBranches := []*github.Branch{}
+	opt := &github.ListOptions{}
+	for {
+		ghb, resp, err := ghc.Repositories.ListBranches(context.Background(), t.Org, t.Repo, opt)
+		if err != nil {
+			return nil, err
+		}
+		ghBranches = append(ghBranches, ghb...)
+		if resp.NextPage == 0 {
+			break
+		}
+		opt.Page = resp.NextPage
 	}
 
-	branches := make([]Branch, len(ghb))
-
-	for i, branch := range ghb {
+	branches := make([]Branch, len(ghBranches))
+	for i, branch := range ghBranches {
 		cs, _, err := ghc.Repositories.GetCombinedStatus(context.Background(), t.Org, t.Repo, *branch.Name, nil)
 		if err != nil {
 			return nil, err
