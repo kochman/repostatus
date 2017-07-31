@@ -127,48 +127,6 @@ func (ws wsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}()
 }
 
-/*
-func (ws wsHandler) updater() {
-	var chans []chan []byte
-	tc := travis.Client{}
-	ticker := time.Tick(time.Minute)
-
-	// first update
-	branches, err := tc.Branches()
-	if err != nil {
-		log.Fatal(err)
-	}
-	b, err := json.Marshal(branches)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	for {
-		select {
-		case <-ticker:
-			branches, err := tc.Branches()
-			if err != nil {
-				log.Fatal(err)
-			}
-			newB, err := json.Marshal(branches)
-			if err != nil {
-				log.Fatal(err)
-			}
-			if !bytes.Equal(b, newB) {
-				b = newB
-				for _, ch := range chans {
-					log.Println("periodic send")
-					ch <- b
-				}
-			}
-		case ch := <-ws.newClientCh:
-			log.Println("sending")
-			ch <- b
-			chans = append(chans, ch)
-		}
-	}
-}*/
-
 func Serve(ghat string, redisURL string) {
 	wsh := wsHandler{GitHubAccessToken: ghat, RedisURL: redisURL}
 
