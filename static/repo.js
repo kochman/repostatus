@@ -73,9 +73,9 @@ app.component('repo', {
                     </div>
                 </div>
             </div>
-            <div class="branches" v-if="loaded">
+            <div class="branches">
                 <div class="container-fluid card-columns">
-                    <branch-card v-bind:branch="branch" class="mb-3" v-for="branch in repo.branches" v-if="branch.state" v-bind:key="branch.name"></branch-card>
+                    <branch-card v-bind:branch="branch" class="mb-3" v-for="branch in repo.branches" v-bind:key="branch.name"></branch-card>
                 </div>
             </div>
         </div>

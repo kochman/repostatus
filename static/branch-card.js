@@ -10,15 +10,15 @@ function momentUpdater(el, binding) {
 
 // custom directive to keep a relative time up to date
 app.directive('moment-ago', {
-	inserted(el, binding) {
+	mounted(el, binding) {
 	    momentUpdater(el, binding);
 	},
-    update(el, binding) {
+    updated(el, binding) {
 	    momentUpdater(el, binding);
 	},
-	unbind() {
+	unmounted() {
 		clearInterval(this.interval);
-	}
+	},
 });
 
 app.component('branch-card', {
@@ -28,11 +28,6 @@ app.component('branch-card', {
 		}
 	},
     props: ['branch'],
-	filters: {
-		truncate(text, length) {
-			return text.slice(0, length);
-		}
-	},
     computed: {
 		branchState: function() {
 			if (this.branch.state === 'success') {
@@ -44,7 +39,10 @@ app.component('branch-card', {
 			} else {
 				return 'pending';
 			}
-		}
+		},
+        truncatedSha: function() {
+            return this.branch.sha.slice(0, 7);
+        },
 	},
 	template: `
         <div class="card text-center" v-bind:class="{ 'card-outline-danger': branchState === 'failure', 'card-outline-success': branchState === 'success' }">
@@ -74,7 +72,7 @@ app.component('branch-card', {
                     &middot;
                     
                     <small class="code text-muted">
-                        <a v-bind:href="branch.commit_url" class="deco-none">{{ branch.sha | truncate(7) }}</a>
+                        <a v-bind:href="branch.commit_url" class="deco-none">{{ truncatedSha }}</a>
                     </small>
                 </p>
                 
