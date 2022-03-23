@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"encoding/gob"
 	"log"
+	"strings"
 	"time"
 
-	"github.com/garyburd/redigo/redis"
-	"strings"
+	"github.com/gomodule/redigo/redis"
 )
 
 const repoSubscriptionKey = "repo_subscriptions"
