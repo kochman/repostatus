@@ -9,7 +9,7 @@ function momentUpdater(el, binding) {
 }
 
 // custom directive to keep a relative time up to date
-Vue.directive('moment-ago', {
+app.directive('moment-ago', {
 	inserted(el, binding) {
 	    momentUpdater(el, binding);
 	},
@@ -21,7 +21,7 @@ Vue.directive('moment-ago', {
 	}
 });
 
-Vue.component('branch-card', {
+app.component('branch-card', {
 	data() {
 		return {
 			showDetail: false

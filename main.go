@@ -1,9 +1,10 @@
 package main
 
 import (
+	"os"
+
 	"github.com/kochman/repostatus/server"
 	"github.com/kochman/repostatus/travis"
-	"os"
 )
 
 func main() {

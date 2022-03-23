@@ -1,4 +1,4 @@
-Vue.component('index', {
+app.component('index', {
 	data() {
 		return {
 			orgRepo: "",

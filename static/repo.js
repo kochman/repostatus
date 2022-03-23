@@ -21,7 +21,7 @@ function createWebSocket(onmessage, onopen) {
 }
 
 // custom directive to keep a relative time up to date
-Vue.directive('moment-ago', {
+app.directive('moment-ago', {
 	inserted(el, binding) {
 		const timestamp = binding.value;
 		el.innerHTML = moment(timestamp).fromNow();
@@ -35,7 +35,7 @@ Vue.directive('moment-ago', {
 	}
 });
 
-Vue.component('repo', {
+app.component('repo', {
 	data() {
 		return {
 			branches: [],
