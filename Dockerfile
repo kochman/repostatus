@@ -1,5 +1,5 @@
 FROM alpine:20220316 as builder
-RUN apk --update-cache --no-cache add go=1.18-r0 git
+RUN apk --update-cache --no-cache add go=1.20-r0 git
 RUN mkdir /build
 WORKDIR /build
 COPY . .
